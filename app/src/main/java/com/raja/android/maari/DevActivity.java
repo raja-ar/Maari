@@ -1,17 +1,17 @@
 /*
- * Copyright 2015 Azmeer Raja
+ *    Copyright 2015 Azmeer Raja
  *
- *   Licensed under the Apache License, Version 2.0 (the "License");
- *   you may not use this file except in compliance with the License.
- *   You may obtain a copy of the License at
+ *      Licensed under the Apache License, Version 2.0 (the "License");
+ *      you may not use this file except in compliance with the License.
+ *      You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *          http://www.apache.org/licenses/LICENSE-2.0
  *
- *   Unless required by applicable law or agreed to in writing, software
- *   distributed under the License is distributed on an "AS IS" BASIS,
- *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *   See the License for the specific language governing permissions and
- *   limitations under the License.
+ *      Unless required by applicable law or agreed to in writing, software
+ *      distributed under the License is distributed on an "AS IS" BASIS,
+ *      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *      See the License for the specific language governing permissions and
+ *      limitations under the License.
  */
 
 package com.raja.android.maari;
@@ -33,11 +33,15 @@ import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
 import com.github.ksoichiro.android.observablescrollview.ScrollUtils;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.nineoldandroids.view.ViewHelper;
 
 public class DevActivity extends AppCompatActivity implements ObservableScrollViewCallbacks, View.OnClickListener {
 
     private View mImageView;
+    private InterstitialAd mInterstitialAd;
 
     private View mToolbarView;
     private ObservableScrollView mScrollView;
@@ -49,12 +53,17 @@ public class DevActivity extends AppCompatActivity implements ObservableScrollVi
         setContentView(R.layout.activity_dev);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
+        //launchAd();
+        // loadAd();
+
         //Set and Define Imageviews id
         ImageView knowme = (ImageView) findViewById(R.id.knowme);
+        ImageView bwar = (ImageView) findViewById(R.id.bwar);
         ImageView maari = (ImageView) findViewById(R.id.maari);
         ImageView kingcompass = (ImageView) findViewById(R.id.kingcompass);
         ImageView racear = (ImageView) findViewById(R.id.racear);
         ImageView fotoar =(ImageView) findViewById(R.id.fotoar);
+
 
 
  /*                 Multiple Screen Size Condition             */
@@ -70,6 +79,8 @@ public class DevActivity extends AppCompatActivity implements ObservableScrollVi
             options.inSampleSize=5;
             Bitmap bm_knowme=BitmapFactory.decodeResource(getResources(),R.drawable.knowme,options);
             knowme.setImageBitmap(bm_knowme);
+            Bitmap bm_bwar = BitmapFactory.decodeResource(getResources(), R.drawable.bwar, options);
+            bwar.setImageBitmap(bm_bwar);
             Bitmap bm_maari=BitmapFactory.decodeResource(getResources(),R.drawable.maari,options);
             maari.setImageBitmap(bm_maari);
             Bitmap bm_compass=BitmapFactory.decodeResource(getResources(),R.drawable.kingcompass,options);
@@ -90,6 +101,8 @@ public class DevActivity extends AppCompatActivity implements ObservableScrollVi
             options.inSampleSize=3;
             Bitmap bm_knowme=BitmapFactory.decodeResource(getResources(),R.drawable.knowme,options);
             knowme.setImageBitmap(bm_knowme);
+            Bitmap bm_bwar = BitmapFactory.decodeResource(getResources(), R.drawable.bwar, options);
+            bwar.setImageBitmap(bm_bwar);
             Bitmap bm_maari=BitmapFactory.decodeResource(getResources(),R.drawable.maari,options);
             maari.setImageBitmap(bm_maari);
             Bitmap bm_compass=BitmapFactory.decodeResource(getResources(),R.drawable.kingcompass,options);
@@ -111,6 +124,8 @@ public class DevActivity extends AppCompatActivity implements ObservableScrollVi
 
             Bitmap bm_knowme=BitmapFactory.decodeResource(getResources(),R.drawable.knowme,options);
             knowme.setImageBitmap(bm_knowme);
+            Bitmap bm_bwar = BitmapFactory.decodeResource(getResources(), R.drawable.bwar, options);
+            bwar.setImageBitmap(bm_bwar);
             Bitmap bm_maari=BitmapFactory.decodeResource(getResources(),R.drawable.maari,options);
             maari.setImageBitmap(bm_maari);
             Bitmap bm_compass=BitmapFactory.decodeResource(getResources(),R.drawable.kingcompass,options);
@@ -131,6 +146,7 @@ public class DevActivity extends AppCompatActivity implements ObservableScrollVi
 
             // Set What To Show in The Imageview
             knowme.setImageResource(R.drawable.knowme);
+            bwar.setImageResource(R.drawable.bwar);
             maari.setImageResource(R.drawable.maari);
             kingcompass.setImageResource(R.drawable.kingcompass);
             racear.setImageResource(R.drawable.racear);
@@ -148,6 +164,8 @@ public class DevActivity extends AppCompatActivity implements ObservableScrollVi
 
             Bitmap bm_knowme=BitmapFactory.decodeResource(getResources(),R.drawable.knowme,options);
             knowme.setImageBitmap(bm_knowme);
+            Bitmap bm_bwar = BitmapFactory.decodeResource(getResources(), R.drawable.bwar, options);
+            bwar.setImageBitmap(bm_bwar);
             Bitmap bm_maari=BitmapFactory.decodeResource(getResources(),R.drawable.maari,options);
             maari.setImageBitmap(bm_maari);
             Bitmap bm_compass=BitmapFactory.decodeResource(getResources(),R.drawable.kingcompass,options);
@@ -164,6 +182,7 @@ public class DevActivity extends AppCompatActivity implements ObservableScrollVi
 
         //Set On CLick Listeners
         knowme.setOnClickListener(this);
+        bwar.setOnClickListener(this);
         maari.setOnClickListener(this);
         kingcompass.setOnClickListener(this);
         racear.setOnClickListener(this);
@@ -185,6 +204,67 @@ public class DevActivity extends AppCompatActivity implements ObservableScrollVi
 
     }
 
+    private void loadAd() {
+        AdRequest adRequest = new AdRequest
+                .Builder()
+                //.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                //.addTestDevice(getResources().getString(R.string.device_id))
+                .build();
+        mInterstitialAd.loadAd(adRequest);
+    }
+
+    private void launchAd() {
+        // Create the InterstitialAd and set the adUnitId.
+        mInterstitialAd = new InterstitialAd(this);
+        // Defined in res/values/strings.xml
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                showAd();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                super.onAdFailedToLoad(errorCode);
+                String msg = String.format("onFaildtoLoad (%s)", getErrorReson(errorCode));
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+            }
+        });
+    }
+
+    private String getErrorReson(int errcode) {
+        String errReason = "";
+        switch (errcode) {
+            case AdRequest.ERROR_CODE_INTERNAL_ERROR:
+                errReason = "Internal Error";
+                break;
+            case AdRequest.ERROR_CODE_INVALID_REQUEST:
+                errReason = "invalid request";
+                break;
+            case AdRequest.ERROR_CODE_NETWORK_ERROR:
+                errReason = "Network err";
+                break;
+            case AdRequest.ERROR_CODE_NO_FILL:
+                errReason = "No Fill";
+                break;
+        }
+        return errReason;
+    }
+
+    private void showAd() {
+        if (mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+        } else {
+            // Toast.makeText(this, "Ad did not load", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
     @Override
@@ -225,6 +305,17 @@ public class DevActivity extends AppCompatActivity implements ObservableScrollVi
                 }
             }
             break;
+            case R.id.bwar: {
+
+
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.raja.bwar")));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.raja.bwar")));
+                }
+            }
+            break;
+
             case R.id.maari: {
 
 
